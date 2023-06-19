@@ -85,3 +85,9 @@ The ADOT Collector can be deployed in one of four modes: Deployment, DaemonSet, 
 Each deployment mode serves different use cases and offers unique benefits in terms of management, scalability, monitoring, and offloading telemetry data. Choose the mode that best suits your requirements and deployment scenarios.
 
 Spike uses the Deployment mode to deploy the ADOT Collector as a standalone application.
+
+## Quick Strater Guide
+
+1. Run the command `bootstrap/aws-otel-collector/local/otel-docker-runner.sh` to strat aws-otel-collector in a docker container.
+1. Run the command `go run hello-service/main.go` to strat go lang hello-service.
+1. Run the command `http http://hello.local.gd` and `http http://hello.local.gd/otel` to access the hello-service.
