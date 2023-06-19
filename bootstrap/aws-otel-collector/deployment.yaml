@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: aws-otel-collector
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: aws-otel-collector
+  template:
+    metadata:
+      labels:
+        app: aws-otel-collector
+    spec:
+      containers:
+      - name: aws-otel-collector
+        image: public.ecr.aws/aws-observability/aws-otel-collector:latest
+        ports:
+        - containerPort: 4317
+        - containerPort: 55680
+        - containerPort: 8889
+        env:
+        - name: AWS_REGION
+          value: us-west-2
+        - name: AWS_PROFILE
+          value: lcp-sandbox
+        volumeMounts:
+        - name: aws-credentials-volume
+          mountPath: /root/.aws
+        - name: otel-config-volume
+          mountPath: /config/otel-local-config.yaml
+          subPath: otel-local-config.yaml
+        args:
+        - "--config"
+        - "/config/otel-local-config.yaml"
+      volumes:
+      - name: aws-credentials-volume
+        secret:
+          secretName: aws-credentials
+      - name: otel-config-volume
+        configMap:
+          name: aws-otel-collector-config
+
+---
