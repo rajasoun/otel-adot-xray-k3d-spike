@@ -25,6 +25,8 @@ Follow these steps to set up and run the project:
 
 6. Access the hello-service: Use the commands `http http://hello.local.gd` and `http http://hello.local.gd/otel` to access the hello-service and verify the integration with AWS X-Ray.
 
+7. Visit the AWS X-Ray Console: Navigate to the AWS X-Ray console to view the traces and metrics collected from the hello-service. Ensure that the AWS region is set to `us-west-2` and the time range is set to `Last 5 minutes` as specified `bootstrap/aws-otel-collector/config.yaml`.
+
 Please refer to the provided readme file for detailed instructions and additional information about the project setup, configuration, and usage.
 
 ## Details 
@@ -91,3 +93,4 @@ Spike uses the Deployment mode to deploy the ADOT Collector as a standalone appl
 1. Run the command `bootstrap/aws-otel-collector/local/otel-docker-runner.sh` to strat aws-otel-collector in a docker container.
 1. Run the command `go run hello-service/main.go` to strat go lang hello-service.
 1. Run the command `http http://hello.local.gd` and `http http://hello.local.gd/otel` to access the hello-service.
+1. Visit the AWS X-Ray Console: Navigate to the AWS X-Ray console to view the traces and metrics collected from the hello-service. Ensure that the AWS region is set to `us-west-2` and the time range is set to `Last 5 minutes` as specified `bootstrap/aws-otel-collector/config.yaml`.
