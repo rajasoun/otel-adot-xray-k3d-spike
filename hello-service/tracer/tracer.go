@@ -1,13 +1,3 @@
-/*
-* Provides methods to initialize the tracer and retrieve the X-Ray trace ID associated with a span.
-* Summary:
-* Sets up the OpenTelemetry tracer using the OTLP (Open Telemetry Protocol) with a gRPC-based trace exporter.
-* Configures the following components:
-* 1. OTLP Trace Exporter: It creates an exporter responsible for sending telemetry data to the backend using the otlptracegrpc.New() function.
-* 2. Resource: It defines contextual information about the service, such as the schema URL and service name, using the resource.NewWithAttributes() function.
-* 3. Tracer Provider: It manages and provides tracers, spans, and other instrumentation components using the sdktrace.NewTracerProvider() function.
- */
-
 package tracer
 
 import (
@@ -27,10 +17,11 @@ import (
 	"google.golang.org/grpc"
 )
 
-// Tracer is an interface for initializing the tracer
+// Tracer is an interface for initializing the tracer and retrieving the X-Ray trace ID
 type Tracer interface {
 	New(serviceName string) (*sdktrace.TracerProvider, error)
 	GetXrayTraceID(span trace.Span) string
+	StartSpan(ctx context.Context, serviceTraceName string) (context.Context, trace.Span)
 }
 
 // TracerImpl is an implementation of Tracer
@@ -61,6 +52,16 @@ func (t *TracerImpl) GetXrayTraceID(span trace.Span) string {
 	xrayTraceID := span.SpanContext().TraceID().String()
 	result := fmt.Sprintf("1-%s-%s", xrayTraceID[0:8], xrayTraceID[8:])
 	return result
+}
+
+// CreateSpan creates a span
+func (t *TracerImpl) StartSpan(ctx context.Context, serviceTraceName string) (context.Context, trace.Span) {
+	traceProvider, err := t.New(serviceTraceName)
+	if err != nil {
+		log.Fatalf("failed to create tracer provider: %v", err)
+	}
+	log.Println("After initializing tracer provider")
+	return traceProvider.Tracer(serviceTraceName).Start(ctx, serviceTraceName)
 }
 
 // getOTLPEndpointFromEnv gets the OTLP endpoint from the environment
