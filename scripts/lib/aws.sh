@@ -14,10 +14,18 @@ function create_secrets_in_cluster_from_aws_credential_file() {
     pretty_print "\n${BLUE}Secrets Created in Cluster from $aws_credentials_file${NC}\n"
 }
 
+# delete_aws_credentials_from_cluster deletes the secret from the cluster
+function delete_aws_credentials_from_cluster() {
+    local secret_name=${1:-$DEFAULT_SECRET_NAME}
+    kubectl delete secret $secret_name
+}
+
 # Function to check the expiration time of the AWS token
 function check_aws_token_expiration_time() {
     local aws_profile=${1:-$DEFAULT_AWS_PROFILE}
-    local aws_token_expiration_time=$(kubectl get secret aws-credentials -o jsonpath='{.data.credentials}' | base64 --decode | aws configure get x_security_token_expires --profile "$aws_profile")
+    local secret_name=${2:-$DEFAULT_SECRET_NAME}
+    echo "AWS Profile: $aws_profile"
+    local aws_token_expiration_time=$(kubectl get secret $secret_name -o jsonpath='{.data.credentials}' | base64 --decode | aws configure get x_security_token_expires --profile "$aws_profile")
     local current_time=$(date +%s)
     local expiration_time=$(date -d "$aws_token_expiration_time" +%s)
     local remaining_minutes=$(( (expiration_time - current_time) / 60 ))
@@ -29,9 +37,9 @@ function check_aws_token_expiration_time() {
     fi
 }
 
-# view_aws_credentials_from_cluster 
+# view_aws_credentials_from_cluster vews the secret from the cluster
 function view_aws_credentials_from_cluster() {
-    local secret_name=${2:-$DEFAULT_SECRET_NAME}
+    local secret_name=${1:-$DEFAULT_SECRET_NAME}
     kubectl get secret $secret_name -o jsonpath='{.data.credentials}' | base64 --decode
 }
 
