@@ -18,12 +18,12 @@ Follow these steps to set up and run the project:
 2. Create Secrets: Execute the commands to create a secret containing AWS credentials required for accessing AWS services.
     * Directly using ``kubectl create secret generic aws-credentials --from-file="$HOME/.aws/credentials"` 
     * With warppers script
-    ```sh
-    scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
-    scripts/wrapper.sh run view_aws_credentials_from_cluster
-    scripts/wrapper.sh run check_aws_token_expiration_time
-    scripts/wrapper.sh run delete_aws_credentials_from_cluster
-    ```
+        ```sh
+        scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
+        scripts/wrapper.sh run view_aws_credentials_from_cluster
+        scripts/wrapper.sh run check_aws_token_expiration_time
+        scripts/wrapper.sh run delete_aws_credentials_from_cluster
+        ```
 
 3. Bootstrap the Cluster: Apply the bootstrap resources to the local Kubernetes cluster using the command `kubectl apply -k bootstrap`.
 
