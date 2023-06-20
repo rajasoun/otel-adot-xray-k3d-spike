@@ -15,7 +15,15 @@ Follow these steps to set up and run the project:
 
 1. Create a Local Kubernetes Cluster: Use the command `local-dev/assist.sh setup` to create a local Kubernetes cluster using k3d.
 
-2. Create Secrets: Execute the command `kubectl create secret generic aws-credentials --from-file="$HOME/.aws/credentials"` to create a secret containing AWS credentials required for accessing AWS services.
+2. Create Secrets: Execute the commands to create a secret containing AWS credentials required for accessing AWS services.
+    * Directly using ``kubectl create secret generic aws-credentials --from-file="$HOME/.aws/credentials"` 
+    * With warppers script
+    ```sh
+    scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
+    scripts/wrapper.sh run view_aws_credentials_from_cluster
+    scripts/wrapper.sh run check_aws_token_expiration_time
+    scripts/wrapper.sh run delete_aws_credentials_from_cluster
+    ```
 
 3. Bootstrap the Cluster: Apply the bootstrap resources to the local Kubernetes cluster using the command `kubectl apply -k bootstrap`.
 
