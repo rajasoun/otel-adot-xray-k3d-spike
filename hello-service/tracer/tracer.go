@@ -19,9 +19,8 @@ import (
 
 // Tracer is an interface for initializing the tracer and retrieving the X-Ray trace ID
 type Tracer interface {
-	New(serviceName string) (*sdktrace.TracerProvider, error)
+	New(serviceName string) *sdktrace.TracerProvider
 	GetXrayTraceID(span trace.Span) string
-	StartSpan(ctx context.Context, serviceTraceName string) (context.Context, trace.Span)
 }
 
 // TracerImpl is an implementation of Tracer
@@ -31,20 +30,21 @@ type TracerImpl struct{}
 var Otel Tracer = &TracerImpl{}
 
 // New initializes the tracer
-func (t *TracerImpl) New(serviceName string) (*sdktrace.TracerProvider, error) {
+func (t *TracerImpl) New(serviceName string) *sdktrace.TracerProvider {
 	ctx := context.Background()
 	endpoint := getOTLPEndpointFromEnv()
 
 	traceExporter, err := createOTLPTraceExporter(ctx, endpoint)
 	if err != nil {
-		return nil, fmt.Errorf("failed to create OTLP trace exporter: %w", err)
+		log.Fatalf("failed to create OTLP trace exporter: %v", err)
+		return nil
 	}
 	log.Println("After initializing console trace exporter")
 
 	traceProvider := createTraceProvider(traceExporter, serviceName)
 	otel.SetTracerProvider(traceProvider)
 	otel.SetTextMapPropagator(xray.Propagator{})
-	return traceProvider, nil
+	return traceProvider
 }
 
 // GetXrayTraceID gets the X-Ray trace ID
@@ -52,16 +52,6 @@ func (t *TracerImpl) GetXrayTraceID(span trace.Span) string {
 	xrayTraceID := span.SpanContext().TraceID().String()
 	result := fmt.Sprintf("1-%s-%s", xrayTraceID[0:8], xrayTraceID[8:])
 	return result
-}
-
-// CreateSpan creates a span
-func (t *TracerImpl) StartSpan(ctx context.Context, serviceTraceName string) (context.Context, trace.Span) {
-	traceProvider, err := t.New(serviceTraceName)
-	if err != nil {
-		log.Fatalf("failed to create tracer provider: %v", err)
-	}
-	log.Println("After initializing tracer provider")
-	return traceProvider.Tracer(serviceTraceName).Start(ctx, serviceTraceName)
 }
 
 // getOTLPEndpointFromEnv gets the OTLP endpoint from the environment
