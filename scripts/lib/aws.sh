@@ -23,9 +23,9 @@ function check_aws_token_expiration_time() {
     local remaining_minutes=$(( (expiration_time - current_time) / 60 ))
 
     if ((remaining_minutes > 0)); then
-        pretty_print "\n${BLUE}AWS Token will expire in: $remaining_minutes minutes.${NC}\n"
+        pretty_print "\n${BLUE}AWS Token in cluster will expire in: $remaining_minutes minutes.${NC}\n"
     else
-        pretty_print "\n${BLUE}AWS Token has already expired.${NC}\n"
+        pretty_print "\n${BLUE}AWS Token in cluster has already expired.${NC}\n"
     fi
 }
 
