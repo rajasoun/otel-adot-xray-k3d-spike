@@ -17,6 +17,7 @@ function create_secrets_in_cluster_from_aws_credential_file() {
 # delete_aws_credentials_from_cluster deletes the secret from the cluster
 function delete_aws_credentials_from_cluster() {
     local secret_name=${1:-$DEFAULT_SECRET_NAME}
+    check_secret_exist_in_cluster $secret_name || return 1
     kubectl delete secret $secret_name
 }
 
@@ -25,6 +26,8 @@ function check_aws_token_expiration_time() {
     local aws_profile=${1:-$DEFAULT_AWS_PROFILE}
     local secret_name=${2:-$DEFAULT_SECRET_NAME}
     echo "AWS Profile: $aws_profile"
+    check_secret_exist_in_cluster $secret_name || return 1
+
     local aws_token_expiration_time=$(kubectl get secret $secret_name -o jsonpath='{.data.credentials}' | base64 --decode | aws configure get x_security_token_expires --profile "$aws_profile")
     local current_time=$(date +%s)
     local expiration_time=$(date -d "$aws_token_expiration_time" +%s)
@@ -40,7 +43,26 @@ function check_aws_token_expiration_time() {
 # view_aws_credentials_from_cluster vews the secret from the cluster
 function view_aws_credentials_from_cluster() {
     local secret_name=${1:-$DEFAULT_SECRET_NAME}
+    check_secret_exist_in_cluster $secret_name || return 1
     kubectl get secret $secret_name -o jsonpath='{.data.credentials}' | base64 --decode
+}
+
+# check_secret checks if the secret exists in the cluster
+function check_secret_exist_in_cluster() {
+    local secret_name=${1:-$DEFAULT_SECRET_NAME}
+    local secret_output
+
+    # Run kubectl command to get the secret
+    secret_output=$(kubectl get secret "$secret_name" 2>/dev/null)
+
+    # Check if the secret exists
+    if [[ -n "$secret_output" ]]; then
+        pretty_print "${GREEN}Secret '$secret_name' exists.\n${NC}"
+        return 0
+    else
+        pretty_print "${RED}Secret '$secret_name' does not exist.\n${NC}"
+        return 1
+    fi
 }
 
 # Example usage
