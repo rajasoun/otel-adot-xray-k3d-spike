@@ -31,9 +31,9 @@ function create_secrets() {
 
     # Option 2: Create secret using wrapper script
     scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
-    scripts/wrapper.sh run view_aws_credentials_from_cluster
-    scripts/wrapper.sh run check_aws_token_expiration_time
-    scripts/wrapper.sh run delete_aws_credentials_from_cluster
+    #scripts/wrapper.sh run view_aws_credentials_from_cluster
+    #scripts/wrapper.sh run check_aws_token_expiration_time
+    #scripts/wrapper.sh run delete_aws_credentials_from_cluster
 }
 
 # Step 3: Bootstrap the Cluster
@@ -72,7 +72,7 @@ function visit_xray_console() {
 
 
 function setup() {
-    overview
+    #overview
     create_local_cluster
     create_secrets
     bootstrap_cluster
@@ -84,6 +84,7 @@ function teardown() {
 
 function status() {
     retrieve_pod_container_info
+    scripts/wrapper.sh run check_aws_token_expiration_time
 }
 
 function test() {

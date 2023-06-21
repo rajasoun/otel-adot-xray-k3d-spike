@@ -25,7 +25,7 @@ function delete_aws_credentials_from_cluster() {
 function check_aws_token_expiration_time() {
     local aws_profile=${1:-$DEFAULT_AWS_PROFILE}
     local secret_name=${2:-$DEFAULT_SECRET_NAME}
-    echo "AWS Profile: $aws_profile"
+    pretty_print "\n\tAWS Profile: $aws_profile\n"
     check_secret_exist_in_cluster $secret_name || return 1
 
     local aws_token_expiration_time=$(kubectl get secret $secret_name -o jsonpath='{.data.credentials}' | base64 --decode | aws configure get x_security_token_expires --profile "$aws_profile")
@@ -34,9 +34,9 @@ function check_aws_token_expiration_time() {
     local remaining_minutes=$(( (expiration_time - current_time) / 60 ))
 
     if ((remaining_minutes > 0)); then
-        pretty_print "\n${BLUE}AWS Token in cluster will expire in: $remaining_minutes minutes.${NC}\n"
+        pretty_print "\n\t${BLUE}AWS Token in cluster will expire in: $remaining_minutes minutes.${NC}\n"
     else
-        pretty_print "\n${BLUE}AWS Token in cluster has already expired.${NC}\n"
+        pretty_print "\n\t${BLUE}AWS Token in cluster has already expired.${NC}\n"
     fi
 }
 
@@ -57,10 +57,10 @@ function check_secret_exist_in_cluster() {
 
     # Check if the secret exists
     if [[ -n "$secret_output" ]]; then
-        pretty_print "${GREEN}Secret '$secret_name' exists.\n${NC}"
+        pretty_print "\t${GREEN}Secret '$secret_name' exists.\n${NC}"
         return 0
     else
-        pretty_print "${RED}Secret '$secret_name' does not exist.\n${NC}"
+        pretty_print "\t${RED}Secret '$secret_name' does not exist.\n${NC}"
         return 1
     fi
 }
