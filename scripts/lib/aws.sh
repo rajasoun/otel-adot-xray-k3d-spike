@@ -40,6 +40,25 @@ function check_aws_token_expiration_time() {
     fi
 }
 
+# Function to check the expiration time of the AWS token in the local machine
+function check_local_aws_token_expiration_time() {
+    local aws_profile=${1:-$DEFAULT_AWS_PROFILE}
+    local secret_name=${2:-$DEFAULT_SECRET_NAME}
+    pretty_print "\n\tAWS Profile: $aws_profile"
+    check_aws_profile_exists "$aws_profile" || return 1
+
+    local aws_token_expiration_time=$(aws configure get x_security_token_expires --profile "$aws_profile")
+    local current_time=$(date +%s)
+    local expiration_time=$(date -d "$aws_token_expiration_time" +%s)
+    local remaining_minutes=$(( (expiration_time - current_time) / 60 ))
+
+    if ((remaining_minutes > 0)); then
+        pretty_print "\n\t${BLUE}AWS Token will expire in: $remaining_minutes minutes.${NC}\n"
+    else
+        pretty_print "\n\t${BLUE}AWS Token has already expired.${NC}\n"
+    fi
+}
+
 # view_aws_credentials_from_cluster vews the secret from the cluster
 function view_aws_credentials_from_cluster() {
     local secret_name=${1:-$DEFAULT_SECRET_NAME}
@@ -64,6 +83,19 @@ function check_secret_exist_in_cluster() {
         return 1
     fi
 }
+
+# Function to check if the AWS profile exists
+function check_aws_profile_exists() {
+    local aws_profile=${1:-$DEFAULT_AWS_PROFILE}
+    if ! aws configure get aws_access_key_id --profile "$aws_profile" >/dev/null 2>&1; then
+        pretty_print "\n\t${RED}AWS Profile '$aws_profile' does not exist.${NC}"
+        return 1
+    else 
+        pretty_print "\n\t${GREEN}AWS Profile '$aws_profile' exists.${NC}"
+        return 0
+    fi
+}
+
 
 # Example usage
 # create_secrets_in_cluster_from_aws_credential_file
