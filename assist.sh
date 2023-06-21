@@ -87,8 +87,8 @@ function status() {
 }
 
 function test() {
-    # build_push_deploy_hello_service
-    # access_hello_service
+    build_push_deploy_hello_service
+    access_hello_service
     visit_xray_console
 }
 
