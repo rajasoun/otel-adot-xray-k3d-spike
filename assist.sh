@@ -44,12 +44,12 @@ function create_secrets() {
 
 # Step 3: Bootstrap the Cluster
 function bootstrap_cluster() {
-    kubectl apply -k bootstrap
+    kubectl apply -k bootstrap/k8s
 }
 
 # Step 4: Retrieve Pod and Container Information
 function retrieve_pod_container_info() {
-    bootstrap/debug.sh default
+    bootstrap/k8s/debug.sh default
 }
 
 # Step 5: Build, Push, and Deploy the hello-service

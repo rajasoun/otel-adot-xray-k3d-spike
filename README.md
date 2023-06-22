@@ -25,9 +25,9 @@ Follow these steps to set up and run the project:
         scripts/wrapper.sh run delete_aws_credentials_from_cluster
         ```
 
-3. Bootstrap the Cluster: Apply the bootstrap resources to the local Kubernetes cluster using the command `kubectl apply -k bootstrap`.
+3. Bootstrap the Cluster: Apply the bootstrap resources to the local Kubernetes cluster using the command `kubectl apply -k bootstrap/k8s`.
 
-4. Retrieve Pod and Container Information: Run the command `bootstrap/debug.sh default` to obtain information about the pods, containers, and their associated ports.
+4. Retrieve Pod and Container Information: Run the command `bootstrap/k8s/debug.sh default` to obtain information about the pods, containers, and their associated ports.
 
 5. Build, Push, and Deploy the hello-service: Navigate to the `cd hello-service` directory and execute the following commands sequentially:
    - `.ci-cd/build.sh` to build the hello-service container image.
@@ -101,7 +101,7 @@ Spike uses the Deployment mode to deploy the ADOT Collector as a standalone appl
 
 ## Quick Strater Guide
 
-1. Run the command `bootstrap/aws-otel-collector/local/otel-docker-runner.sh` to strat aws-otel-collector in a docker container.
+1. Run the command `bootstrap/local/aws-otel-collector/otel-docker-runner.sh` to strat aws-otel-collector in a docker container.
 1. Run the command `go run hello-service/main.go` to strat go lang hello-service.
 1. Run the command `http http://hello.local.gd` and `http http://hello.local.gd/otel` to access the hello-service.
 1. Visit the AWS X-Ray Console: Navigate to the AWS X-Ray console to view the traces and metrics collected from the hello-service. Ensure that the AWS region is set to `us-west-2` and the time range is set to `Last 5 minutes` as specified `bootstrap/aws-otel-collector/config.yaml`.
