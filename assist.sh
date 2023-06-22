@@ -19,6 +19,12 @@ function overview() {
     echo
 }
 
+# precheck function
+function prechecks(){
+    scripts/wrapper.sh run check_aws_profile_exists || return 1
+    scripts/wrapper.sh run check_local_aws_token_expiration_time || return 1
+}
+
 # Step 1: Create a Local Kubernetes Cluster
 function create_local_cluster() {
     local-dev/assist.sh setup
@@ -73,6 +79,7 @@ function visit_xray_console() {
 
 function setup() {
     #overview
+    prechecks
     create_local_cluster
     create_secrets
     bootstrap_cluster
