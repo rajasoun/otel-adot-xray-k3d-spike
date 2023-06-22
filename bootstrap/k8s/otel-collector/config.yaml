@@ -18,10 +18,12 @@ data:
     exporters:
       logging:
         loglevel: debug
+      jaeger:
+        endpoint: jaeger.default.svc.cluster.local:16686
 
     service:
       pipelines:
         traces:
           receivers: [otlp]
-          exporters: [logging]
+          exporters: [logging, jaeger]
 ---
