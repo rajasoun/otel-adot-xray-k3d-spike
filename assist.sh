@@ -21,7 +21,7 @@ function overview() {
 
 # precheck function
 function prechecks(){
-    scripts/wrapper.sh run check_local_aws_token_expiration_time && return 1
+    scripts/wrapper.sh run check_local_aws_token_expiration_time || return 1
 }
 
 # Step 1: Create a Local Kubernetes Cluster
