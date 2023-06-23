@@ -25,7 +25,7 @@ data:
       pipelines:
         traces:
           receivers: [otlp]
-          exporters: [awsxray]
+          exporters: [awsxray, logging]
         metrics:
           receivers: [otlp]
           exporters: [awsemf]
