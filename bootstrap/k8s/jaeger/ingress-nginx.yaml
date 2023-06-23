@@ -3,7 +3,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: jaeger-ingress
- annotations:
+  annotations:
     networking.kubernetes.io/ingress.class: nginx
 spec:
   ingressClassName: nginx
