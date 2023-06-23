@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jaeger-all-in-one
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jaeger-all-in-one
+  template:
+    metadata:
+      labels:
+        app: jaeger-all-in-one
+    spec:
+      containers:
+        - name: jaeger-all-in-one
+          image: jaegertracing/all-in-one:latest
+          ports:
+            - containerPort: 16686
+              name: query
+            - containerPort: 14250
+              name: jaeger-thrift
+            - containerPort: 14268
+              name: jaeger-agent
+
