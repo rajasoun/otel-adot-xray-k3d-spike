@@ -56,6 +56,7 @@ function check_local_aws_token_expiration_time() {
         pretty_print "\n\t${BLUE}AWS Token will expire in: $remaining_minutes minutes.${NC}\n"
     else
         pretty_print "\n\t${BLUE}AWS Token has already expired.${NC}\n"
+        pretty_print "\n\t${RED}Execute -> duo-sso${NC}\n"
     fi
 }
 
