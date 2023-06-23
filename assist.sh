@@ -27,6 +27,7 @@ function prechecks(){
 # Step 1: Create a Local Kubernetes Cluster
 function create_local_cluster() {
     local-dev/assist.sh setup
+    kubectx k3d-dev
 }
 
 # Step 2: Create Secrets
