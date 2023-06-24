@@ -1,12 +1,9 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 
-# AWS OTel Collector + AWS XRay
-resources:
-  - aws-otel-xray.yaml
-
 # OTel Operator + OTel Collector + Jaeger
 resources:
-  - otel-oprerator-collector-jaeger.yaml
-
-
+  - ingress-nginx
+  - otel-operator
+  - otel-collector
+  - jaeger
