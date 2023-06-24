@@ -108,3 +108,7 @@ Spike uses the Deployment mode to deploy the ADOT Collector as a standalone appl
 
 [win_setup]: https://github.com/rajasoun/win10x-onboard
 [mac_setup]: https://github.com/rajasoun/mac-onboard
+
+
+kubectl apply  -k bootstrap/k8s/otel/collector
+kubectl apply  -k bootstrap/k8s/otel/operator
