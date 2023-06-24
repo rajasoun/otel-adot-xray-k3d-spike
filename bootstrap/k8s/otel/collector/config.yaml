@@ -15,6 +15,9 @@ spec:
     exporters:
       logging:
         loglevel: debug
+      jaeger:
+        endpoint: jaeger-collector.observability.svc.cluster.local:14250
+        insecure: true
 
     service:
       pipelines:
