@@ -4,22 +4,9 @@ kind: Kustomization
 namespace: cert-manager
 
 resources:
-- cert-manager.yaml
+  - https://github.com/cert-manager/cert-manager/releases/download/v1.5.3/cert-manager.yaml
 
-patches:
-- target:
-    group: apps
-    version: v1
-    kind: Deployment
-    name: cert-manager-webhook
-  patch: |-
-    - op: replace
-      path: /spec/template/spec/containers/0/args/0
-      value: --v=2
 
-helmCharts:
-- name: cert-manager
-  repository: https://charts.jetstack.io
-  version: v1.5.3
-  releaseName: cert-manager
-  releaseNamespace: cert-manager
+
+
+
