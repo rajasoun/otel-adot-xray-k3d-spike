@@ -3,10 +3,15 @@ kind: Kustomization
 
 # AWS OTel Collector + AWS XRay
 resources:
-  - aws-otel-xray.yaml
+  - ingress-nginx
+  - aws-otel-collector
 
-# OTel Operator + OTel Collector + Jaeger
-resources:
-  - otel-oprerator-collector-jaeger.yaml
+# # OTel Operator + OTel Collector + Jaeger
+# resources:
+#   - ingress-nginx
+#   - otel-operator
+#   - otel-collector
+#   - jaeger
+
 
 

@@ -1,9 +1,0 @@
-apiVersion: kustomize.config.k8s.io/v1beta1
-kind: Kustomization
-
-# OTel Operator + OTel Collector + Jaeger
-resources:
-  - ingress-nginx
-  - otel-operator
-  - otel-collector
-  - jaeger
