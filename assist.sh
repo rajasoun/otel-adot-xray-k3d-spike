@@ -82,6 +82,12 @@ function perform_prechecks() {
 # Setup function
 function setup() {
     local option="$1"
+
+    if [[ -z "$option" ]]; then
+        echo "No argument provided. Please specify either 'aws' or 'otel'."
+        exit 1
+    fi
+    
     print_section_header "Automated Script Overview"
     echo "1. Create a Local Kubernetes Cluster"
     echo "2. Create Secrets"
@@ -103,10 +109,6 @@ function setup() {
             ;;
         "otel")
             bootstrap_otel_ecosystem_in_cluster
-            ;;
-        *)
-            echo "Invalid argument. Please specify either 'aws' or 'otel'."
-            exit 1
             ;;
     esac
 }
