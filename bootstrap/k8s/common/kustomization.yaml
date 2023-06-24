@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - cert-manager
   - ingress-nginx
-  
+
 
 
 
