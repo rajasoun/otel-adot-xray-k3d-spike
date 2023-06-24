@@ -6,22 +6,10 @@ IFS=$'\n\t'
 GIT_BASE_PATH=$(git rev-parse --show-toplevel)
 SCRIPT_LIB_DIR="$GIT_BASE_PATH/scripts/lib"
 
-# Overview function
-function overview() {
-    echo "Automated Script Overview:"
-    echo "1. Create a Local Kubernetes Cluster"
-    echo "2. Create Secrets"
-    echo "3. Bootstrap the Cluster"
-    echo "4. Retrieve Pod and Container Information"
-    echo "5. Build, Push, and Deploy the hello-service"
-    echo "6. Access the hello-service"
-    echo "7. Visit the AWS X-Ray Console"
+# Print section headers
+function print_section_header() {
+    echo "$1"
     echo
-}
-
-# precheck function
-function prechecks(){
-    scripts/wrapper.sh run check_local_aws_token_expiration_time || return 1
 }
 
 # Step 1: Create a Local Kubernetes Cluster
@@ -42,9 +30,19 @@ function create_secrets() {
     #scripts/wrapper.sh run delete_aws_credentials_from_cluster
 }
 
-# Step 3: Bootstrap the Cluster
-function bootstrap_cluster() {
-    kubectl apply -k bootstrap/k8s
+# Step 3: Bootstrap common in Cluster
+function bootstrap_common_in_cluster() {
+    kubectl apply -k bootstrap/k8s/common
+}
+
+# Step 3a: Bootstrap otel aws in the Cluster
+function bootstrap_otel_aws_in_cluster() {
+    kubectl apply -k bootstrap/k8s/otel-aws-collector-xray
+}
+
+# Step 3b: Bootstrap otel operator + collector + jaeger in the Cluster
+function bootstrap_otel_ecosystem_in_cluster() {
+    kubectl apply -k bootstrap/k8s/otel-operator-collector-jaeger
 }
 
 # Step 4: Retrieve Pod and Container Information
@@ -68,38 +66,68 @@ function access_hello_service() {
 
 # Step 7: Visit the AWS X-Ray Console
 function visit_xray_console() {
-    # Navigate to the AWS X-Ray console as specified
-    local region=$(yq e '.data."otel-local-config.yaml" | select(. != null)' ${GIT_BASE_PATH}/bootstrap/k8s/aws-otel-collector/config.yaml | yq e '.exporters.awsxray.region' -)
+    local region=$(yq e '.data."otel-local-config.yaml" | select(. != null)' "${GIT_BASE_PATH}/bootstrap/k8s/aws-otel-collector/config.yaml" | yq e '.exporters.awsxray.region' -)
     local xray_console_url="https://$region.console.aws.amazon.com/cloudwatch/home?region=$region#xray:traces/query"
 
-    pretty_print "${BOLD}Visit the AWS X-Ray Console${NC}\n"
-    pretty_print "${YELLOW}URL:${NC} ${BLUE}$xray_console_url${NC}\n"
+    print_section_header "Visit the AWS X-Ray Console"
+    echo "URL: $xray_console_url"
+    echo
 }
 
+# Perform prechecks before setup
+function perform_prechecks() {
+    scripts/wrapper.sh run check_local_aws_token_expiration_time || return 1
+}
 
+# Setup function
 function setup() {
-    #overview
-    prechecks
+    local option="$1"
+    print_section_header "Automated Script Overview"
+    echo "1. Create a Local Kubernetes Cluster"
+    echo "2. Create Secrets"
+    echo "3. Bootstrap the Cluster"
+    echo "4. Retrieve Pod and Container Information"
+    echo "5. Build, Push, and Deploy the hello-service"
+    echo "6. Access the hello-service"
+    echo "7. Visit the AWS X-Ray Console"
+    echo
+
+    perform_prechecks
     create_local_cluster
     create_secrets
-    bootstrap_cluster
+    bootstrap_common_in_cluster
+
+    case "$option" in
+        "aws")
+            bootstrap_otel_aws_in_cluster
+            ;;
+        "otel")
+            bootstrap_otel_ecosystem_in_cluster
+            ;;
+        *)
+            echo "Invalid argument. Please specify either 'aws' or 'otel'."
+            exit 1
+            ;;
+    esac
 }
 
+# Teardown function
 function teardown() {
     local-dev/assist.sh teardown
 }
 
-function status() {
+# Get status function
+function get_status() {
     retrieve_pod_container_info
     scripts/wrapper.sh run check_aws_token_expiration_time
 }
 
-function test() {
+# Run tests
+function run_tests() {
     build_push_deploy_hello_service
     access_hello_service
     visit_xray_console
 }
 
-
 # Execute main function
-source "${SCRIPT_LIB_DIR}/main.sh" $@
+source "${SCRIPT_LIB_DIR}/main.sh" "$@"
