@@ -16,7 +16,7 @@ spec:
       logging:
         loglevel: debug
       jaeger:
-        endpoint: 10.42.0.7:14250
+        endpoint: jaeger:14250
         tls:
           insecure: true
 
