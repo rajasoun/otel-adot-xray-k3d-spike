@@ -36,13 +36,13 @@ function bootstrap_common_in_cluster() {
 }
 
 # Step 3a: Bootstrap otel aws in the Cluster
-function bootstrap_otel_aws_in_cluster() {
-    kubectl apply -k bootstrap/k8s/otel-aws-collector-xray
+function bootstrap_aws_adot_collection_in_cluster() {
+    kubectl apply -k bootstrap/k8s/aws-adot-collector-xray
 }
 
 # Step 3b: Bootstrap otel operator + collector + jaeger in the Cluster
-function bootstrap_otel_ecosystem_in_cluster() {
-    kubectl apply -k bootstrap/k8s/otel-operator-collector-jaeger
+function bootstrap_otel_collector_in_cluster() {
+    kubectl apply -k bootstrap/k8s/otel-collector-jaeger
 }
 
 # Step 4: Retrieve Pod and Container Information
@@ -104,10 +104,10 @@ function setup() {
         "aws")
             perform_prechecks
             create_secrets
-            bootstrap_otel_aws_in_cluster
+            bootstrap_aws_adot_collection_in_cluster
             ;;
         "otel")
-            bootstrap_otel_ecosystem_in_cluster
+            bootstrap_otel_collector_in_cluster
             ;;
     esac
 }
