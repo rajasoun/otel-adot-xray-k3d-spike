@@ -3,7 +3,6 @@ kind: Kustomization
 
 # AWS OTel Collector + AWS XRay
 resources:
-  - otel-operator
   - jaeger
   - otel-collector
 
