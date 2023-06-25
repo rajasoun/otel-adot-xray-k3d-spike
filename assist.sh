@@ -97,13 +97,13 @@ function setup() {
     echo "7. Visit the AWS X-Ray Console"
     echo
 
-    perform_prechecks
     create_local_cluster
-    create_secrets
     bootstrap_common_in_cluster
 
     case "$option" in
         "aws")
+            perform_prechecks
+            create_secrets
             bootstrap_otel_aws_in_cluster
             ;;
         "otel")
