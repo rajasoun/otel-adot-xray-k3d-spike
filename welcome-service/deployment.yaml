@@ -2,7 +2,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: welcome-deployment
+  name: welcome-service
 spec:
   replicas: 1
   selector:
@@ -14,7 +14,7 @@ spec:
         app:  welcome-service
     spec:
       containers:
-      - name: welcome-container
+      - name: welcome-service
         image: nginx:latest
         ports:
         - containerPort: 80

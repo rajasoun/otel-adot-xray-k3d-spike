@@ -15,3 +15,6 @@ kubectl wait --namespace ingress-nginx \
   --for=condition=ready pod \
   --selector=app.kubernetes.io/component=controller \
   --timeout=120s
+
+echo -e "\n${YELLOW}Checking for ingress-nginx-controller service...${NC}"
+kubectl get service ingress-nginx-controller --namespace=ingress-nginx
