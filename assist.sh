@@ -80,14 +80,13 @@ function perform_prechecks() {
 }
 
 # Setup function
-function setup() {
-    local option="$1"
-
-    if [[ -z "$option" ]]; then
-        echo "No argument provided. Please specify either 'aws' or 'otel'."
-        exit 1
+function setup() {   
+    local option="$2"
+    if [[ -z "$option" || ("$option" != "aws" && "$option" != "otel") ]]; then
+        echo -e "${RED}Option is empty or is neither 'aws' nor 'otel'${NC}"
+        return 1
     fi
-    
+
     print_section_header "Automated Script Overview"
     echo "1. Create a Local Kubernetes Cluster"
     echo "2. Create Secrets"
