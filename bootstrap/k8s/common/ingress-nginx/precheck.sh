@@ -18,3 +18,9 @@ kubectl wait --namespace ingress-nginx \
 
 echo -e "\n${YELLOW}Checking for ingress-nginx-controller service...${NC}"
 kubectl get service ingress-nginx-controller --namespace=ingress-nginx
+
+
+echo -e "\n${YELLOW}ingress-nginx-controller version...${NC}"
+POD_NAMESPACE=ingress-nginx
+POD_NAME=$(kubectl get pods -n $POD_NAMESPACE -l app.kubernetes.io/name=ingress-nginx --field-selector=status.phase=Running -o name)
+kubectl exec $POD_NAME -n $POD_NAMESPACE -- /nginx-ingress-controller --version
