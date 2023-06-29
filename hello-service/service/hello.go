@@ -7,59 +7,71 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/rajasoun/hello-service/service/handler"
+	"github.com/rajasoun/hello-service/tracer"
 )
 
-// ServiceInterface is an interface for the service
 type ServiceInterface interface {
 	Start()
 	Stop()
 }
 
-// ServiceImpl is an implementation of ServiceInterface
 type ServiceImpl struct {
 	server *http.Server
 }
 
-// Start starts the service
 func (s *ServiceImpl) Start() {
 	gin.SetMode(gin.ReleaseMode)
-	ctx := context.Background()
 	router := setupRouter()
-	s.server = &http.Server{Addr: ":8080", Handler: router}
-	go startServer(ctx, s.server)
+
+	s.server = &http.Server{
+		Addr:    ":8080",
+		Handler: router,
+	}
+
+	go startServer(s.server)
 }
 
-// Stop stops the service
 func (s *ServiceImpl) Stop() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	shutdownServer(ctx, s.server)
+
+	shutdownServer(s.server, ctx)
 }
 
-// setupRouter sets up the router
 func setupRouter() *gin.Engine {
 	router := gin.Default()
-	router.Use(gin.Recovery())
-	router.Use(gin.Logger())
 	router.SetTrustedProxies([]string{"0.0.0.0"})
 
-	router.GET("/", handler.SayHello)
-	router.GET("/otel", handler.SayHelloWithTelemetry)
+	router.GET("/", func(c *gin.Context) {
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Hello, World! (without telemetry)",
+		})
+	})
+
+	router.GET("/otel", func(c *gin.Context) {
+		ctx := c.Request.Context()
+		traceProvider := tracer.Otel.New("hello-service")
+
+		log.Println("After initializing tracer provider")
+		_, span := traceProvider.Tracer("hello-service").Start(ctx, "hello-service-handler-with-otel")
+		defer span.End()
+		c.JSON(http.StatusOK, gin.H{
+			"message": "Hello, World! (with telemetry)",
+		})
+
+	})
 
 	return router
 }
 
-// startServer starts the server
-func startServer(ctx context.Context, server *http.Server) {
+func startServer(server *http.Server) {
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		log.Fatalf("failed to listen and serve: %v", err)
+		panic(err)
 	}
 }
 
-// shutdownServer shuts down the server
-func shutdownServer(ctx context.Context, server *http.Server) {
+func shutdownServer(server *http.Server, ctx context.Context) {
 	if err := server.Shutdown(ctx); err != nil {
-		log.Fatalf("failed to shutdown server: %v", err)
+		panic(err)
 	}
 }
