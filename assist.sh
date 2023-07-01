@@ -119,13 +119,13 @@ function teardown() {
 }
 
 # Get status function
-function get_status() {
+function status() {
     retrieve_pod_container_info
     scripts/wrapper.sh run check_aws_token_expiration_time
 }
 
 # Run tests
-function run_tests() {
+function test() {
     build_push_deploy_hello_service
     access_hello_service
     visit_xray_console
