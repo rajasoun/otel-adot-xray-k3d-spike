@@ -5,7 +5,7 @@ kind: Kustomization
 resources:
   - common
   - otel-aws-collector-xray
-  # - otel-operator-collector-jaeger
+  - otel-collector-jaeger
 
 
 
