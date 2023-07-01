@@ -83,7 +83,7 @@ function perform_prechecks() {
 function setup() {   
     local option="$2"
     if [[ -z "$option" || ("$option" != "aws" && "$option" != "otel") ]]; then
-        echo -e "${RED}Option is empty or is neither 'aws' nor 'otel'${NC}"
+        echo -e "${RED}Option is empty or is neither 'aws' or 'otel'${NC}"
         return 1
     fi
 
@@ -106,7 +106,6 @@ function setup() {
             bootstrap_aws_adot_collection_in_cluster
             ;;
         "otel")
-            perform_prechecks
             create_local_cluster
             bootstrap_otel_collector_in_cluster
             ;;
