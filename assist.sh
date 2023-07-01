@@ -108,6 +108,7 @@ function setup() {
         "otel")
             create_local_cluster
             bootstrap_otel_collector_in_cluster
+            bootstrap_common_in_cluster
             ;;
     esac
 }
