@@ -4,10 +4,17 @@ kind: Kustomization
 resources:
   - https://github.com/cert-manager/cert-manager/releases/download/v1.12.2/cert-manager.yaml
   - certs-selfsigned.yaml
-  
 
-
-
-
+patches:
+  - target:
+      group: cert-manager.io
+      version: v1
+      kind: Certificate
+      name: selfsigned-cert
+      namespace: cert-manager-local-gd
+    patch: |-
+      - op: add
+        path: /spec/commonName
+        value: local.gd
 
 
