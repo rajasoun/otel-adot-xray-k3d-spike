@@ -2,6 +2,33 @@
 
  Commands demonstrate how to set up a Kubernetes deployment, expose it using an ingress resource, and perform a test request. 
 
+# Using kubectl with kustomization
+
+## Setup
+
+To begin, execute the following commands to set up the deployment and ingress resource:
+
+```sh
+kubectl apply -k welcome-service
+```
+
+## Test
+
+After the setup is complete, you can test the deployment by making an HTTP request to the specified URL. Use the http command-line tool and provide the appropriate request method and URL. 
+
+```sh
+http http://welcome.local.gd
+```
+
+## Teardown
+
+Execute the following commands for teardown:
+
+```sh
+kubectl delete -k welcome-service
+```
+
+# Using kubectl (without kustomization)
 ## Setup
 
 To begin, execute the following commands to set up the deployment and ingress resource:
