@@ -4,3 +4,4 @@ metadata:
   name: otel-collector-config
 data:
   OTEL_EXPORTER_OTLP_ENDPOINT: "simplest-collector-headless.default.svc.cluster.local:4317"
+  # OTEL_EXPORTER_OTLP_ENDPOINT: "aws-otel-collector-service.default.svc.cluster.local:4317"
