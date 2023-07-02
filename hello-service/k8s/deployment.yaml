@@ -22,5 +22,5 @@ spec:
             - containerPort: 8080
           env:
             - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "aws-otel-collector-service.default.svc.cluster.local:4317"
+              value: "simplest-collector-headless.default.svc.cluster.local:4317" #"aws-otel-collector-service.default.svc.cluster.local:4317"
 ---
