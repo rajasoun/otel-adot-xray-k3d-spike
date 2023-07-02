@@ -4,7 +4,7 @@ kind: Kustomization
 # AWS OTel Collector + AWS XRay
 resources:
   - common
-  - otel-aws-collector-xray
+  - aws-adot-collector-xray
   - otel-collector-jaeger
 
 
