@@ -32,6 +32,11 @@ function wait_till_all_pods_are_ready(){
     kubectl wait -n "$NAMESPACE" --for=condition=ready pods --all --timeout=120s
 }
 
+# wait till all pods are ready with message
+function wait_till_all_pods_are_ready_with_message(){
+    kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s && pass "Bootstrap pods Running in Done < 120s\n" || warn "Bootstrap pods taking > 120s\n"
+}
+
 # print Gateway URL 
 function print_gateway_url(){
     export GATEWAY_HOST=$(kubectl -n istio-system get service istio-gateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
