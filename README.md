@@ -25,7 +25,23 @@ Follow these steps to set up and run the project:
         scripts/wrapper.sh run delete_aws_credentials_from_cluster
         ```
 
-3. Bootstrap the Cluster: Apply the bootstrap resources to the local Kubernetes cluster using the command `kubectl apply -k bootstrap/k8s`.
+3. Bootstrap the Cluster: Apply the bootstrap resources to the local Kubernetes cluster using the bellow commands.
+   ```sh
+   kubectl apply -k bootstrap/k8s/base/cert-manager
+   kubectl wait -n cert-manager --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
+
+   kubectl apply -k bootstrap/k8s/base/otel-operator
+   kubectl wait -n opentelemetry-operator-system --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
+
+   scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
+   kubectl apply -k bootstrap/k8s/aws-adot-collector-xray
+
+   kubectl apply -k bootstrap/k8s/base/ingress-nginx
+   kubectl wait -n ingress-nginx --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
+
+   kubectl apply -k bootstrap/k8s/otel-collector-jaeger
+   kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
+   ```
 
 4. Retrieve Pod and Container Information: Run the command `bootstrap/k8s/debug.sh default` to obtain information about the pods, containers, and their associated ports.
 
@@ -109,29 +125,6 @@ Spike uses the Deployment mode to deploy the ADOT Collector as a standalone appl
 
 
 
-## Setup
-local-dev/assist.sh setup
-scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
-kubectl apply -k bootstrap/k8s/base/cert-manager
-kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
-
-kubectl apply -k bootstrap/k8s/base/ingress-nginx
-kubectl apply -k bootstrap/k8s/base/otel-operator
-kubectl apply -k bootstrap/k8s/otel-collector-jaeger
-kubectl apply -k bootstrap/k8s/aws-adot-collector-xray
-
-kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
-make -f hello-service/.ci-cd/Makefile build-push-deploy
-
-## Test
-http http://hello.local.gd
-http http://hello.local.gd/otel
-
-## Teardown 
-
-make -f hello-service/.ci-cd/Makefile clean
-kubectl delete -k bootstrap/k8s
-local-dev/assist.sh teardown
 
 
 
