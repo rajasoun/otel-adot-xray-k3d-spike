@@ -30,9 +30,7 @@ Follow these steps to set up and run the project:
 4. Retrieve Pod and Container Information: Run the command `bootstrap/k8s/debug.sh default` to obtain information about the pods, containers, and their associated ports.
 
 5. Build, Push, and Deploy the hello-service: Navigate to the `cd hello-service` directory and execute the following commands sequentially:
-   - `.ci-cd/build.sh` to build the hello-service container image.
-   - `.ci-cd/push.sh` to push the built image to the local registry.
-   - `.ci-cd/deploy.sh` to deploy the hello-service to the local Kubernetes cluster.
+   - `make -f hello-service/.ci-cd/Makefile build-push-deploy`
 
 6. Access the hello-service: Use the commands `http http://hello.local.gd` and `http http://hello.local.gd/otel` to access the hello-service and verify the integration with AWS X-Ray.
 
@@ -115,10 +113,9 @@ scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
 kubectl apply -k bootstrap/k8s
 kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
 
-cd hello-service
-.ci-cd/build.sh
-.ci-cd/push.sh
-.ci-cd/deploy.sh
+make -f hello-service/.ci-cd/Makefile build-push-deploy
 
 http http://hello.local.gd
 http http://hello.local.gd/otel
+
+make -f hello-service/.ci-cd/Makefile clean

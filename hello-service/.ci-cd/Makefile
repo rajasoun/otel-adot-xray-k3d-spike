@@ -34,7 +34,9 @@ remove-from-kubernetes: ## Remove from Kubernetes
 	kubectl delete -k ${APP}/k8s
 
 remove-docker: ## Remove Docker image
+	docker image prune -f
 	docker rmi $(APP):$(VERSION)
+
 
 build-push-deploy: build-docker tag-docker push-docker deploy-to-kubernetes ## Build, tag, push and deploy to Kubernetes
 
