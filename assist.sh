@@ -53,10 +53,7 @@ function retrieve_pod_container_info() {
 
 # Step 5: Build, Push, and Deploy the hello-service
 function build_push_deploy_hello_service() {
-    cd hello-service
-    .ci-cd/build.sh
-    .ci-cd/push.sh
-    .ci-cd/deploy.sh
+    make -f hello-service/.ci-cd/Makefile build-push-deploy
 }
 
 # Step 6: Access the hello-service
