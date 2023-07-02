@@ -64,7 +64,12 @@ function access_hello_service() {
 
 # Step 7: Visit the AWS X-Ray Console
 function visit_xray_console() {
-    local region=$(yq e '.data."otel-local-config.yaml" | select(. != null)' "${GIT_BASE_PATH}/bootstrap/k8s/aws-otel-collector/config.yaml" | yq e '.exporters.awsxray.region' -)
+    # Check if aws-otel-collector pod is running
+    if ! kubectl get pod -l app=aws-otel-collector -o name | grep -q '^pod/aws-otel-collector'; then
+        exit 1
+    fi
+
+    local region=$(yq e '.data."otel-local-config.yaml" | select(. != null)' "${GIT_BASE_PATH}/bootstrap/k8s/aws-adot-collector-xray/config.yaml" | yq e '.exporters.awsxray.region' -)
     local xray_console_url="https://$region.console.aws.amazon.com/cloudwatch/home?region=$region#xray:traces/query"
 
     print_section_header "Visit the AWS X-Ray Console"
