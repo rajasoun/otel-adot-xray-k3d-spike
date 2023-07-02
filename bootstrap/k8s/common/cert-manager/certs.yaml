@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: cert-manager-local-gd
+---
+apiVersion: cert-manager.io/v1
+kind: Issuer
+metadata:
+  name: local-gd-selfsigned
+  namespace: cert-manager-local-gd
+spec:
+  selfSigned: {}
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: selfsigned-cert
+  namespace: cert-manager-local-gd
+spec:
+  dnsNames:
+    - local.gd
+  secretName: selfsigned-cert-tls
+  issuerRef:
+    name: local-gd-selfsigned
