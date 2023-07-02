@@ -34,7 +34,8 @@ function wait_till_all_pods_are_ready(){
 
 # wait till all pods are ready with message
 function wait_till_all_pods_are_ready_with_message(){
-    kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s && pass "Bootstrap pods Running in Done < 120s\n" || warn "Bootstrap pods taking > 120s\n"
+    NAMESPACE="$1"
+    kubectl wait -n "$NAMESPACE" --for=condition=ready pods --all --timeout=120s && pass "$MESSAGE Running in < 120s\n" || warn "$MESSAGE Not Running in < 120s\n"
 }
 
 # print Gateway URL 

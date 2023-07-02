@@ -33,7 +33,7 @@ function create_secrets() {
 # Step 3: Bootstrap common in Cluster
 function bootstrap_common_in_cluster() {
     kubectl apply -k bootstrap/k8s/common
-    wait_till_all_pods_are_ready_with_message
+    wait_till_all_pods_are_ready_with_message "opentelemetry-operator-system" "opentelemetry-operator" 
 }
 
 # Step 3a: Bootstrap otel aws in the Cluster
