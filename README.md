@@ -110,5 +110,15 @@ Spike uses the Deployment mode to deploy the ADOT Collector as a standalone appl
 [mac_setup]: https://github.com/rajasoun/mac-onboard
 
 
-kubectl apply  -k bootstrap/k8s/otel/collector
-kubectl apply  -k bootstrap/k8s/otel/operator
+local-dev/assist.sh setup
+scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
+kubectl apply -k bootstrap/k8s
+kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
+
+cd hello-service
+.ci-cd/build.sh
+.ci-cd/push.sh
+.ci-cd/deploy.sh
+
+http http://hello.local.gd
+http http://hello.local.gd/otel
