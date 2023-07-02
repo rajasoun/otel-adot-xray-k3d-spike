@@ -20,7 +20,10 @@ spec:
           image: registry.dev.local.gd:5001/hello-service:latest
           ports:
             - containerPort: 8080
-          env:
-            - name: OTEL_EXPORTER_OTLP_ENDPOINT
-              value: "simplest-collector-headless.default.svc.cluster.local:4317" #"aws-otel-collector-service.default.svc.cluster.local:4317"
+          envFrom: 
+            - configMapRef:
+                name: otel-collector-config
+          # env:
+          #   - name: OTEL_EXPORTER_OTLP_ENDPOINT
+          #     value: "simplest-collector-headless.default.svc.cluster.local:4317" #"aws-otel-collector-service.default.svc.cluster.local:4317"
 ---
