@@ -30,9 +30,9 @@ function create_secrets() {
     #scripts/wrapper.sh run delete_aws_credentials_from_cluster
 }
 
-# Step 3: Bootstrap common in Cluster
-function bootstrap_common_in_cluster() {
-    kubectl apply -k bootstrap/k8s/common
+# Step 3: Bootstrap base in Cluster
+function bootstrap_base_in_cluster() {
+    kubectl apply -k bootstrap/k8s/base
     wait_till_all_pods_are_ready_with_message "opentelemetry-operator-system" "opentelemetry-operator" 
 }
 
@@ -99,13 +99,13 @@ function setup() {
         "aws")
             perform_prechecks
             create_local_cluster
-            bootstrap_common_in_cluster
+            bootstrap_base_in_cluster
             create_secrets
             bootstrap_aws_adot_collection_in_cluster
             ;;
         "otel")
             create_local_cluster
-            bootstrap_common_in_cluster
+            bootstrap_base_in_cluster
             bootstrap_otel_collector_in_cluster
             ;;
     esac
