@@ -112,7 +112,14 @@ Spike uses the Deployment mode to deploy the ADOT Collector as a standalone appl
 ## Setup
 local-dev/assist.sh setup
 scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
-kubectl apply -k bootstrap/k8s
+kubectl apply -k bootstrap/k8s/base/cert-manager
+kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
+
+kubectl apply -k bootstrap/k8s/base/ingress-nginx
+kubectl apply -k bootstrap/k8s/base/otel-operator
+kubectl apply -k bootstrap/k8s/otel-collector-jaeger
+kubectl apply -k bootstrap/k8s/aws-adot-collector-xray
+
 kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
 make -f hello-service/.ci-cd/Makefile build-push-deploy
 
