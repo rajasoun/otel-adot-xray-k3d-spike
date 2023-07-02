@@ -112,7 +112,7 @@ Spike uses the Deployment mode to deploy the ADOT Collector as a standalone appl
 ## Setup
 local-dev/assist.sh setup
 scripts/wrapper.sh run create_secrets_in_cluster_from_aws_credential_file
-kubectl apply -k bootstrap/k8s/common
+kubectl apply -k bootstrap/k8s
 kubectl wait --all-namespaces --for=condition=ready pod --field-selector=status.phase=Running --timeout=120s
 make -f hello-service/.ci-cd/Makefile build-push-deploy
 
@@ -123,7 +123,7 @@ http http://hello.local.gd/otel
 ## Teardown 
 
 make -f hello-service/.ci-cd/Makefile clean
-kubectl delete -k bootstrap/k8s/common
+kubectl delete -k bootstrap/k8s
 local-dev/assist.sh teardown
 
 
